@@ -156,6 +156,7 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
   const hasInitialScrolled = useRef(false);
   const [mounted, setMounted] = useState(false);
   const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 25 });
+  const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -191,9 +192,13 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
           lastPeriodDate: data.lastPeriodDate || '',
           cycleLength: parseInt(data.cycleLength) || 25,
         });
+        setShowBanner(!data.lastPeriodDate);
+      } else {
+        setShowBanner(true);
       }
     } catch (e) {
       console.error('Error loading data:', e);
+      setShowBanner(true);
     }
   }, []);
 
@@ -220,123 +225,131 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
 
   const onSubmit = (data) => {
     localStorage.setItem('cycleData', JSON.stringify(data));
+    setShowBanner(!data.lastPeriodDate);
     setIsDrawerOpen(false);
   };
 
   return (
-    <Drawer open={isDrawerOpen} onOpenChange={(open) => {
-      if (!open) {
-        setSelectedDate(null);
-      }
-      setIsDrawerOpen(open);
-    }}>
-      <DrawerContent>
-        <div className="max-w-xl w-full p-4 mx-auto">
-            <DrawerHeader className="text-center">
-                <DrawerTitle>Update my cycle</DrawerTitle>
-            </DrawerHeader>
-            
-            <div className="p-4">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="lastPeriodDate"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Last periods started</FormLabel>
-                                <FormControl>
-                                <Input 
-                                    {...field} 
-                                    value={field.value ? new Date(field.value).toLocaleDateString() : ''}
-                                    disabled 
-                                />
-                                </FormControl>
-                            </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="cycleLength"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Cycle length</FormLabel>
-                                <FormControl>
-                                    <div className="flex items-center">
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="px-4"
-                                            onClick={() => field.onChange(Math.max(1, field.value - 1))}
-                                        >
-                                            <ChevronLeft className="h-4 w-4" />
-                                        </Button>
-                                        <Input 
-                                            type="number" 
-                                            {...field} 
-                                            className="text-center"
-                                            readOnly
-                                        />
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="px-4"
-                                            onClick={() => field.onChange(field.value + 1)}
-                                        >
-                                            <ChevronRight className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </FormControl>
-                            </FormItem>
-                            )}
-                        />
-
-                        <DrawerFooter className="px-0">
-                            <div className="flex justify-between w-full gap-4">
-                                <DrawerClose asChild>
-                                    <Button 
-                                        className="flex-1" 
-                                        variant="outline" 
-                                        onClick={() => {
-                                            const savedData = JSON.parse(localStorage.getItem('cycleData')) || {
-                                                lastPeriodDate: '',
-                                                cycleLength: 25,
-                                            };
-                                            form.reset(savedData);
-                                            setIsDrawerOpen(false);
-                                        }}
-                                    >
-                                        Close
-                                    </Button>
-                                </DrawerClose>
-                                <Button className="flex-1" type="submit">Save</Button>
-                            </div>
-                        </DrawerFooter>
-                    </form>
-                </Form>
-            </div>
+    <>
+      {showBanner && (
+        <div className="sticky top-0 z-50 w-full bg-primary text-primary-foreground p-4 text-center shadow-md">
+          Please select your most recent period start date
         </div>
-      </DrawerContent>
+      )}
+      <Drawer open={isDrawerOpen} onOpenChange={(open) => {
+        if (!open) {
+          setSelectedDate(null);
+        }
+        setIsDrawerOpen(open);
+      }}>
+        <DrawerContent>
+          <div className="max-w-xl w-full p-4 mx-auto">
+              <DrawerHeader className="text-center">
+                  <DrawerTitle>Predict My Menstrual Cycle</DrawerTitle>
+              </DrawerHeader>
+              
+              <div className="p-4">
+                  <Form {...form}>
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                          <FormField
+                              control={form.control}
+                              name="lastPeriodDate"
+                              render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Most Recent Period Start Date</FormLabel>
+                                  <FormControl>
+                                  <Input 
+                                      {...field} 
+                                      value={field.value ? new Date(field.value).toLocaleDateString() : ''}
+                                      disabled 
+                                  />
+                                  </FormControl>
+                              </FormItem>
+                              )}
+                          />
 
-      <div className="w-full border rounded-lg shadow-sm">
-        <div className="overflow-y-auto">
-          {months.map((date, index) => (
-            <React.Fragment key={date.toISOString()}>
-              <MonthCalendar 
-                date={date} 
-                selectedDate={selectedDate} 
-                onSelect={handleDateSelect}
-                isCurrentMonth={isCurrentMonth(date)}
-                hasInitialScrolled={hasInitialScrolled}
-                locale={locale}
-              />
-              {index < months.length - 1 && <div className="border-t" />}
-            </React.Fragment>
-          ))}
+                          <FormField
+                              control={form.control}
+                              name="cycleLength"
+                              render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Average Cycle Length (Days)</FormLabel>
+                                  <FormControl>
+                                      <div className="flex items-center">
+                                          <Button
+                                              type="button"
+                                              variant="outline"
+                                              className="px-4"
+                                              onClick={() => field.onChange(Math.max(1, field.value - 1))}
+                                          >
+                                              <ChevronLeft className="h-4 w-4" />
+                                          </Button>
+                                          <Input 
+                                              type="number" 
+                                              {...field} 
+                                              className="text-center"
+                                              readOnly
+                                          />
+                                          <Button
+                                              type="button"
+                                              variant="outline"
+                                              className="px-4"
+                                              onClick={() => field.onChange(field.value + 1)}
+                                          >
+                                              <ChevronRight className="h-4 w-4" />
+                                          </Button>
+                                      </div>
+                                  </FormControl>
+                              </FormItem>
+                              )}
+                          />
+
+                          <DrawerFooter className="px-0">
+                              <div className="flex justify-between w-full gap-4">
+                                  <DrawerClose asChild>
+                                      <Button 
+                                          className="flex-1" 
+                                          variant="outline" 
+                                          onClick={() => {
+                                              const savedData = JSON.parse(localStorage.getItem('cycleData')) || {
+                                                  lastPeriodDate: '',
+                                                  cycleLength: 25,
+                                              };
+                                              form.reset(savedData);
+                                              setIsDrawerOpen(false);
+                                          }}
+                                      >
+                                          Cancel
+                                      </Button>
+                                  </DrawerClose>
+                                  <Button className="flex-1" type="submit">Update</Button>
+                              </div>
+                          </DrawerFooter>
+                      </form>
+                  </Form>
+              </div>
+          </div>
+        </DrawerContent>
+
+        <div className="w-full border rounded-lg shadow-sm">
+          <div className="overflow-y-auto">
+            {months.map((date, index) => (
+              <React.Fragment key={date.toISOString()}>
+                <MonthCalendar 
+                  date={date} 
+                  selectedDate={selectedDate} 
+                  onSelect={handleDateSelect}
+                  isCurrentMonth={isCurrentMonth(date)}
+                  hasInitialScrolled={hasInitialScrolled}
+                  locale={locale}
+                />
+                {index < months.length - 1 && <div className="border-t" />}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
-      </div>
-    </Drawer>
+      </Drawer>
+    </>
   );
 };
 
