@@ -154,6 +154,7 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const hasInitialScrolled = useRef(false);
   const [mounted, setMounted] = useState(false);
+  const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 28 });
 
   useEffect(() => {
     setMounted(true);
@@ -174,11 +175,26 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
   };
 
   const form = useForm({
-    defaultValues: mounted ? getSavedData() : {
+    defaultValues: {
       lastPeriodDate: '',
       cycleLength: 28,
     },
   });
+
+  useEffect(() => {
+    try {
+      const data = JSON.parse(localStorage.getItem('cycleData'));
+      if (data) {
+        setSavedData(data);
+        form.reset({
+          lastPeriodDate: data.lastPeriodDate || '',
+          cycleLength: parseInt(data.cycleLength) || 28,
+        });
+      }
+    } catch (e) {
+      console.error('Error loading data:', e);
+    }
+  }, []);
 
   // Generate array of 24 months (12 past, current, 11 future)
   const months = Array.from({ length: 24 }, (_, i) => {
@@ -209,7 +225,7 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
   return (
     <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <DrawerContent>
-        <div className="max-w-xl min-w-[500px] p-4 mx-auto">
+        <div className="max-w-xl w-full p-4 mx-auto">
             <DrawerHeader className="text-center">
                 <DrawerTitle>Update my cycle</DrawerTitle>
             </DrawerHeader>
@@ -224,7 +240,11 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
                             <FormItem>
                                 <FormLabel>Last periods started</FormLabel>
                                 <FormControl>
-                                <Input {...field} disabled />
+                                <Input 
+                                    {...field} 
+                                    value={field.value ? new Date(field.value).toLocaleDateString() : ''}
+                                    disabled 
+                                />
                                 </FormControl>
                             </FormItem>
                             )}
