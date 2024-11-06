@@ -47,6 +47,37 @@ const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitia
     const days = [];
     const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+    // Get period data from localStorage
+    const savedData = JSON.parse(localStorage.getItem('cycleData'));
+    const periodStartDate = savedData?.lastPeriodDate ? new Date(savedData.lastPeriodDate) : null;
+    const cycleLength = savedData?.cycleLength || 28;
+
+    const getDayStatus = (dayDate) => {
+      if (!periodStartDate) return 'normal';
+      
+      // Calculate the difference in days
+      const diffTime = dayDate.getTime() - periodStartDate.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays < 0) return 'normal';
+      
+      // Calculate which cycle this date falls in
+      const cycleNumber = Math.floor(diffDays / cycleLength);
+      const daysIntoCycle = diffDays % cycleLength;
+      
+      // Period days (first 4 days of cycle)
+      if (daysIntoCycle >= 0 && daysIntoCycle <= 3) {
+        return 'period';
+      }
+      
+      // Fertile days (5 days before next period)
+      if (daysIntoCycle >= cycleLength - 5 && daysIntoCycle < cycleLength) {
+        return 'fertile';
+      }
+      
+      return 'normal';
+    };
+
     // Add weekday headers
     weekdays.forEach(day => {
       days.push(
@@ -65,19 +96,24 @@ const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitia
 
     // Add the days of the month
     for (let day = 1; day <= daysInMonth; day++) {
+      const currentDate = new Date(date.getFullYear(), date.getMonth(), day);
       const isSelected = selectedDate?.getDate() === day && 
                         selectedDate?.getMonth() === date.getMonth() &&
                         selectedDate?.getFullYear() === date.getFullYear();
       const isToday = new Date().getDate() === day && 
                      new Date().getMonth() === date.getMonth() &&
                      new Date().getFullYear() === date.getFullYear();
+      const isPeriod = getDayStatus(currentDate) === 'period';
+      const isFertile = getDayStatus(currentDate) === 'fertile';
 
       days.push(
         <button
           key={`day-${day}`}
           onClick={() => onSelect(new Date(date.getFullYear(), date.getMonth(), day))}
           className={`w-full p-2 text-center rounded-lg text-sm transition-colors
-            ${isSelected ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-gray-100'}
+            ${isSelected ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 
+              isPeriod ? 'bg-red-500 text-white hover:bg-red-600' : 
+              isFertile ? 'bg-orange-500 text-white hover:bg-orange-600' : 'hover:bg-gray-100'}
             ${isToday && !isSelected ? 'bg-gray-100' : ''}
             ${!isSelected ? 'text-gray-700' : ''}`}
         >
@@ -105,11 +141,15 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
   const [selectedDate, setSelectedDate] = useState(null); 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const hasInitialScrolled = useRef(false);
+
+  // Get saved data from localStorage
+  const savedData = JSON.parse(localStorage.getItem('cycleData')) || {
+    lastPeriodDate: '',
+    cycleLength: 28,
+  };
+
   const form = useForm({
-    defaultValues: {
-      lastPeriodDate: '',
-      cycleLength: 28,
-    },
+    defaultValues: savedData,
   });
 
   // Generate array of 24 months (12 past, current, 11 future)
@@ -133,6 +173,11 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
            date.getFullYear() === now.getFullYear();
   };
 
+  const onSubmit = (data) => {
+    localStorage.setItem('cycleData', JSON.stringify(data));
+    setIsDrawerOpen(false);
+  };
+
   return (
     <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <DrawerContent>
@@ -143,7 +188,7 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
             
             <div className="p-4">
                 <Form {...form}>
-                    <form className="space-y-4">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
                             control={form.control}
                             name="lastPeriodDate"
@@ -173,20 +218,31 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
                             </FormItem>
                             )}
                         />
+
+                        <DrawerFooter>
+                            <div className="flex justify-between w-full gap-4">
+                                <DrawerClose asChild>
+                                    <Button 
+                                        className="flex-1" 
+                                        variant="outline" 
+                                        onClick={() => {
+                                            const savedData = JSON.parse(localStorage.getItem('cycleData')) || {
+                                                lastPeriodDate: '',
+                                                cycleLength: 28,
+                                            };
+                                            form.reset(savedData);
+                                            setIsDrawerOpen(false);
+                                        }}
+                                    >
+                                        Close
+                                    </Button>
+                                </DrawerClose>
+                                <Button className="flex-1" type="submit">Save</Button>
+                            </div>
+                        </DrawerFooter>
                     </form>
                 </Form>
             </div>
-
-            <DrawerFooter>
-                <div className="flex justify-between w-full gap-4">
-                    <DrawerClose asChild>
-                        <Button className="flex-1" variant="outline">Close</Button>
-                    </DrawerClose>
-                    <DrawerClose asChild>
-                        <Button className="flex-1" type="submit">Save</Button>
-                    </DrawerClose>
-                </div>
-            </DrawerFooter>
         </div>
       </DrawerContent>
 
