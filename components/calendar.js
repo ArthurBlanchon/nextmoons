@@ -26,14 +26,14 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitialScrolled, locale = 'en-US' }) => {
   const monthRef = useRef(null);
-  const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 28 });
+  const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 25 });
   
   useEffect(() => {
     // Load localStorage data after component mounts
     try {
       const data = JSON.parse(localStorage.getItem('cycleData')) || {
         lastPeriodDate: '',
-        cycleLength: 28,
+        cycleLength: 25,
       };
       setSavedData(data);
     } catch (e) {
@@ -155,7 +155,7 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const hasInitialScrolled = useRef(false);
   const [mounted, setMounted] = useState(false);
-  const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 28 });
+  const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 25 });
 
   useEffect(() => {
     setMounted(true);
@@ -166,19 +166,19 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
       try {
         return JSON.parse(localStorage.getItem('cycleData')) || {
           lastPeriodDate: '',
-          cycleLength: 28,
+          cycleLength: 25,
         };
       } catch (e) {
-        return { lastPeriodDate: '', cycleLength: 28 };
+        return { lastPeriodDate: '', cycleLength: 25 };
       }
     }
-    return { lastPeriodDate: '', cycleLength: 28 };
+    return { lastPeriodDate: '', cycleLength: 25 };
   };
 
   const form = useForm({
     defaultValues: {
       lastPeriodDate: '',
-      cycleLength: 28,
+      cycleLength: 25,
     },
   });
 
@@ -189,7 +189,7 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
         setSavedData(data);
         form.reset({
           lastPeriodDate: data.lastPeriodDate || '',
-          cycleLength: parseInt(data.cycleLength) || 28,
+          cycleLength: parseInt(data.cycleLength) || 25,
         });
       }
     } catch (e) {
@@ -224,7 +224,12 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
   };
 
   return (
-    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+    <Drawer open={isDrawerOpen} onOpenChange={(open) => {
+      if (!open) {
+        setSelectedDate(null);
+      }
+      setIsDrawerOpen(open);
+    }}>
       <DrawerContent>
         <div className="max-w-xl w-full p-4 mx-auto">
             <DrawerHeader className="text-center">
@@ -296,7 +301,7 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
                                         onClick={() => {
                                             const savedData = JSON.parse(localStorage.getItem('cycleData')) || {
                                                 lastPeriodDate: '',
-                                                cycleLength: 28,
+                                                cycleLength: 25,
                                             };
                                             form.reset(savedData);
                                             setIsDrawerOpen(false);
