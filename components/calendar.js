@@ -1,11 +1,32 @@
 "use client";
 
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useForm } from "react-hook-form"
+
 import React, { useState, useEffect, useRef } from 'react';
 
 const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitialScrolled, locale = 'en-US' }) => {
   const monthRef = useRef(null);
   
-  useEffect(() => {
+  useEffect(() => { 
     // Only scroll on initial load, not on subsequent updates
     if (isCurrentMonth && !hasInitialScrolled.current && monthRef.current) {
       monthRef.current.scrollIntoView({ behavior: 'instant' });
@@ -56,7 +77,7 @@ const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitia
           key={`day-${day}`}
           onClick={() => onSelect(new Date(date.getFullYear(), date.getMonth(), day))}
           className={`w-full p-2 text-center rounded-lg text-sm transition-colors
-            ${isSelected ? 'bg-blue-500 text-white hover:bg-blue-600' : 'hover:bg-gray-100'}
+            ${isSelected ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-gray-100'}
             ${isToday && !isSelected ? 'bg-gray-100' : ''}
             ${!isSelected ? 'text-gray-700' : ''}`}
         >
@@ -81,9 +102,16 @@ const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitia
 };
 
 const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en-US' }) => {
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null); 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const hasInitialScrolled = useRef(false);
-  
+  const form = useForm({
+    defaultValues: {
+      lastPeriodDate: '',
+      cycleLength: 28,
+    },
+  });
+
   // Generate array of 24 months (12 past, current, 11 future)
   const months = Array.from({ length: 24 }, (_, i) => {
     const date = new Date(initialDate);
@@ -94,6 +122,8 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
+    setIsDrawerOpen(true);
+    form.setValue('lastPeriodDate', date.toLocaleDateString(locale));
     if (onSelect) onSelect(date);
   };
 
@@ -104,23 +134,80 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
   };
 
   return (
-    <div className="w-full border rounded-lg shadow-sm">
-      <div className="overflow-y-auto">
-        {months.map((date, index) => (
-          <React.Fragment key={date.toISOString()}>
-            <MonthCalendar 
-              date={date} 
-              selectedDate={selectedDate} 
-              onSelect={handleDateSelect}
-              isCurrentMonth={isCurrentMonth(date)}
-              hasInitialScrolled={hasInitialScrolled}
-              locale={locale}
-            />
-            {index < months.length - 1 && <div className="border-t" />}
-          </React.Fragment>
-        ))}
+    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+      <DrawerContent>
+        <div className="max-w-xl min-w-[500px] p-4 mx-auto">
+            <DrawerHeader className="text-center">
+                <DrawerTitle>Update my cycle</DrawerTitle>
+            </DrawerHeader>
+            
+            <div className="p-4">
+                <Form {...form}>
+                    <form className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="lastPeriodDate"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Last periods started</FormLabel>
+                                <FormControl>
+                                <Input {...field} disabled />
+                                </FormControl>
+                            </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="cycleLength"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Cycle length</FormLabel>
+                                <FormControl>
+                                <Input 
+                                    type="number" 
+                                    {...field} 
+                                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                />
+                                </FormControl>
+                            </FormItem>
+                            )}
+                        />
+                    </form>
+                </Form>
+            </div>
+
+            <DrawerFooter>
+                <div className="flex justify-between w-full gap-4">
+                    <DrawerClose asChild>
+                        <Button className="flex-1" variant="outline">Close</Button>
+                    </DrawerClose>
+                    <DrawerClose asChild>
+                        <Button className="flex-1" type="submit">Save</Button>
+                    </DrawerClose>
+                </div>
+            </DrawerFooter>
+        </div>
+      </DrawerContent>
+
+      <div className="w-full border rounded-lg shadow-sm">
+        <div className="overflow-y-auto">
+          {months.map((date, index) => (
+            <React.Fragment key={date.toISOString()}>
+              <MonthCalendar 
+                date={date} 
+                selectedDate={selectedDate} 
+                onSelect={handleDateSelect}
+                isCurrentMonth={isCurrentMonth(date)}
+                hasInitialScrolled={hasInitialScrolled}
+                locale={locale}
+              />
+              {index < months.length - 1 && <div className="border-t" />}
+            </React.Fragment>
+          ))}
+        </div>
       </div>
-    </div>
+    </Drawer>
   );
 };
 
