@@ -25,7 +25,21 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitialScrolled, locale = 'en-US' }) => {
   const monthRef = useRef(null);
+  const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 28 });
   
+  useEffect(() => {
+    // Load localStorage data after component mounts
+    try {
+      const data = JSON.parse(localStorage.getItem('cycleData')) || {
+        lastPeriodDate: '',
+        cycleLength: 28,
+      };
+      setSavedData(data);
+    } catch (e) {
+      console.error('Error loading data:', e);
+    }
+  }, []);
+
   useEffect(() => { 
     // Only scroll on initial load, not on subsequent updates
     if (isCurrentMonth && !hasInitialScrolled.current && monthRef.current) {
@@ -47,8 +61,6 @@ const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitia
     const days = [];
     const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    // Get period data from localStorage
-    const savedData = JSON.parse(localStorage.getItem('cycleData'));
     const periodStartDate = savedData?.lastPeriodDate ? new Date(savedData.lastPeriodDate) : null;
     const cycleLength = savedData?.cycleLength || 28;
 
@@ -141,15 +153,31 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
   const [selectedDate, setSelectedDate] = useState(null); 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const hasInitialScrolled = useRef(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Get saved data from localStorage
-  const savedData = JSON.parse(localStorage.getItem('cycleData')) || {
-    lastPeriodDate: '',
-    cycleLength: 28,
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const getSavedData = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        return JSON.parse(localStorage.getItem('cycleData')) || {
+          lastPeriodDate: '',
+          cycleLength: 28,
+        };
+      } catch (e) {
+        return { lastPeriodDate: '', cycleLength: 28 };
+      }
+    }
+    return { lastPeriodDate: '', cycleLength: 28 };
   };
 
   const form = useForm({
-    defaultValues: savedData,
+    defaultValues: mounted ? getSavedData() : {
+      lastPeriodDate: '',
+      cycleLength: 28,
+    },
   });
 
   // Generate array of 24 months (12 past, current, 11 future)
