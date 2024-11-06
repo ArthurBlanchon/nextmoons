@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 
 import React, { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitialScrolled, locale = 'en-US' }) => {
   const monthRef = useRef(null);
@@ -257,17 +258,36 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
                             <FormItem>
                                 <FormLabel>Cycle length</FormLabel>
                                 <FormControl>
-                                <Input 
-                                    type="number" 
-                                    {...field} 
-                                    onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                />
+                                    <div className="flex items-center">
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="px-4"
+                                            onClick={() => field.onChange(Math.max(1, field.value - 1))}
+                                        >
+                                            <ChevronLeft className="h-4 w-4" />
+                                        </Button>
+                                        <Input 
+                                            type="number" 
+                                            {...field} 
+                                            className="text-center"
+                                            readOnly
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="px-4"
+                                            onClick={() => field.onChange(field.value + 1)}
+                                        >
+                                            <ChevronRight className="h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </FormControl>
                             </FormItem>
                             )}
                         />
 
-                        <DrawerFooter>
+                        <DrawerFooter className="px-0">
                             <div className="flex justify-between w-full gap-4">
                                 <DrawerClose asChild>
                                     <Button 
