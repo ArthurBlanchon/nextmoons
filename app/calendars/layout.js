@@ -1,16 +1,14 @@
-import Layout from "../../components/layout";
 
-export default function DashboardLayout({
+
+export default function CalendarsLayout({
     children, // will be a page or nested layout
   }) {
     return (
-      <Layout>
         <section>
           {/* Include shared UI here e.g. a header or sidebar */}
-          <nav></nav>
+          <nav> Layout Calendars</nav>
     
           {children}
         </section>
-      </Layout>
     )
   }
