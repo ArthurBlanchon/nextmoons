@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
 const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitialScrolled, locale = 'en-US' }) => {
   const monthRef = useRef(null);
@@ -150,13 +150,14 @@ const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitia
   );
 };
 
-const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en-US' }) => {
+const FullWidthMonthPicker = ({ onSelect, onCycleUpdate, initialDate = new Date(), locale = 'en-US' }) => {
   const [selectedDate, setSelectedDate] = useState(null); 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const hasInitialScrolled = useRef(false);
   const [mounted, setMounted] = useState(false);
   const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 25 });
   const [showBanner, setShowBanner] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -223,10 +224,24 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
            date.getFullYear() === now.getFullYear();
   };
 
-  const onSubmit = (data) => {
-    localStorage.setItem('cycleData', JSON.stringify(data));
-    setShowBanner(!data.lastPeriodDate);
-    setIsDrawerOpen(false);
+  const onSubmit = async (data) => {
+    setIsSubmitting(true)
+    try {
+      localStorage.setItem('cycleData', JSON.stringify(data));
+      setShowBanner(!data.lastPeriodDate);
+      
+      if (onCycleUpdate) {
+        const result = await onCycleUpdate(data);
+        if (!result.success) {
+          console.error('Failed to update cycle:', result.error);
+        }
+      }
+    } catch (error) {
+      console.error('Error during submission:', error);
+    } finally {
+      setIsSubmitting(false);
+      setIsDrawerOpen(false);
+    }
   };
 
   return (
@@ -318,11 +333,15 @@ const FullWidthMonthPicker = ({ onSelect, initialDate = new Date(), locale = 'en
                                               form.reset(savedData);
                                               setIsDrawerOpen(false);
                                           }}
+                                          disabled={isSubmitting}
                                       >
                                           Cancel
                                       </Button>
                                   </DrawerClose>
-                                  <Button className="flex-1" type="submit">Update</Button>
+                                  <Button className="flex-1" type="submit" disabled={isSubmitting}>
+                                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    Update
+                                  </Button>
                               </div>
                           </DrawerFooter>
                       </form>
