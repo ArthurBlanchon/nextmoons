@@ -24,25 +24,18 @@ import { useForm } from "react-hook-form"
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
-const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitialScrolled, locale = 'en-US' }) => {
+const MonthCalendar = ({ 
+  date, 
+  selectedDate, 
+  onSelect, 
+  isCurrentMonth, 
+  hasInitialScrolled, 
+  cycleData, 
+  locale = 'en-US' 
+}) => {
   const monthRef = useRef(null);
-  const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 25 });
   
-  useEffect(() => {
-    // Load localStorage data after component mounts
-    try {
-      const data = JSON.parse(localStorage.getItem('cycleData')) || {
-        lastPeriodDate: '',
-        cycleLength: 25,
-      };
-      setSavedData(data);
-    } catch (e) {
-      console.error('Error loading data:', e);
-    }
-  }, []);
-
   useEffect(() => { 
-    // Only scroll on initial load, not on subsequent updates
     if (isCurrentMonth && !hasInitialScrolled.current && monthRef.current) {
       monthRef.current.scrollIntoView({ behavior: 'instant' });
       hasInitialScrolled.current = true;
@@ -62,32 +55,44 @@ const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitia
     const days = [];
     const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    const periodStartDate = savedData?.lastPeriodDate ? new Date(savedData.lastPeriodDate) : null;
-    const cycleLength = savedData?.cycleLength || 28;
+    // Parse the start date once
+    const startDate = cycleData?.lastPeriodDate ? 
+      new Date(cycleData.lastPeriodDate + 'T00:00:00.000Z') : 
+      null;
+    const cycleLength = parseInt(cycleData?.cycleLength) || 28;
+
+    // Only log once per month
+    if (date.getDate() === 1) {
+      console.log(`Calendar Data for ${formatMonth(date)}:`, {
+        startDate: startDate?.toISOString(),
+        cycleLength
+      });
+    }
 
     const getDayStatus = (dayDate) => {
-      if (!periodStartDate) return 'normal';
-      
-      // Calculate the difference in days
-      const diffTime = dayDate.getTime() - periodStartDate.getTime();
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays < 0) return 'normal';
-      
-      // Calculate which cycle this date falls in
-      const cycleNumber = Math.floor(diffDays / cycleLength);
-      const daysIntoCycle = diffDays % cycleLength;
-      
-      // Period days (first 4 days of cycle)
-      if (daysIntoCycle >= 0 && daysIntoCycle <= 3) {
+      if (!startDate) return 'normal';
+
+      const currentDay = new Date(Date.UTC(
+        dayDate.getFullYear(),
+        dayDate.getMonth(),
+        dayDate.getDate()
+      ));
+
+      const timeDiff = currentDay.getTime() - startDate.getTime();
+      const daysSinceStart = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+      if (daysSinceStart < 0) return 'normal';
+
+      const cyclePosition = daysSinceStart % cycleLength;
+
+      if (cyclePosition >= 0 && cyclePosition <= 3) {
         return 'period';
       }
-      
-      // Fertile days (5 days before next period)
-      if (daysIntoCycle >= cycleLength - 5 && daysIntoCycle < cycleLength) {
+
+      if (cyclePosition >= cycleLength - 5 && cyclePosition < cycleLength) {
         return 'fertile';
       }
-      
+
       return 'normal';
     };
 
@@ -109,20 +114,28 @@ const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitia
 
     // Add the days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const currentDate = new Date(date.getFullYear(), date.getMonth(), day);
+      const currentDate = new Date(Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        day
+      ));
+      
+      const status = getDayStatus(currentDate);
+      const isPeriod = status === 'period';
+      const isFertile = status === 'fertile';
+      
       const isSelected = selectedDate?.getDate() === day && 
                         selectedDate?.getMonth() === date.getMonth() &&
                         selectedDate?.getFullYear() === date.getFullYear();
+      
       const isToday = new Date().getDate() === day && 
                      new Date().getMonth() === date.getMonth() &&
                      new Date().getFullYear() === date.getFullYear();
-      const isPeriod = getDayStatus(currentDate) === 'period';
-      const isFertile = getDayStatus(currentDate) === 'fertile';
 
       days.push(
         <button
           key={`day-${day}`}
-          onClick={() => onSelect(new Date(date.getFullYear(), date.getMonth(), day))}
+          onClick={() => onSelect(currentDate)}
           className={`w-full p-2 text-center rounded-lg text-sm transition-colors
             ${isSelected ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 
               isPeriod ? 'bg-red-500 text-white hover:bg-red-600' : 
@@ -150,73 +163,63 @@ const MonthCalendar = ({ date, selectedDate, onSelect, isCurrentMonth, hasInitia
   );
 };
 
-const FullWidthMonthPicker = ({ onSelect, onCycleUpdate, initialDate = new Date(), locale = 'en-US' }) => {
+const FullWidthMonthPicker = ({ 
+  onSelect, 
+  onCycleUpdate, 
+  initialData,
+  initialDate = new Date(), 
+  locale = 'en-US' 
+}) => {
+  console.log('Component rendering');
+  
+  // Initialize cycleData with initialData immediately
+  const [cycleData, setCycleData] = useState({
+    lastPeriodDate: initialData?.startDate,
+    cycleLength: initialData?.cycleLength
+  });
+
+  // Initialize form with the same data
+  const form = useForm({
+    defaultValues: {
+      lastPeriodDate: initialData?.startDate,
+      cycleLength: initialData?.cycleLength
+    }
+  });
+
   const [selectedDate, setSelectedDate] = useState(null); 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const hasInitialScrolled = useRef(false);
-  const [mounted, setMounted] = useState(false);
-  const [savedData, setSavedData] = useState({ lastPeriodDate: '', cycleLength: 25 });
-  const [showBanner, setShowBanner] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const getSavedData = () => {
-    if (typeof window !== 'undefined') {
-      try {
-        return JSON.parse(localStorage.getItem('cycleData')) || {
-          lastPeriodDate: '',
-          cycleLength: 25,
-        };
-      } catch (e) {
-        return { lastPeriodDate: '', cycleLength: 25 };
-      }
-    }
-    return { lastPeriodDate: '', cycleLength: 25 };
-  };
-
-  const form = useForm({
-    defaultValues: {
-      lastPeriodDate: '',
-      cycleLength: 25,
-    },
-  });
-
-  useEffect(() => {
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
     try {
-      const data = JSON.parse(localStorage.getItem('cycleData'));
-      if (data) {
-        setSavedData(data);
-        form.reset({
-          lastPeriodDate: data.lastPeriodDate || '',
-          cycleLength: parseInt(data.cycleLength) || 25,
-        });
-        setShowBanner(!data.lastPeriodDate);
-      } else {
-        setShowBanner(true);
+      if (onCycleUpdate) {
+        await onCycleUpdate(data);
       }
-    } catch (e) {
-      console.error('Error loading data:', e);
-      setShowBanner(true);
+      setCycleData(data); // Update cycle data the same way as initialization
+      setIsDrawerOpen(false);
+    } catch (error) {
+      console.error('Error during submission:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-  }, []);
-
-  // Generate array of 24 months (12 past, current, 11 future)
-  const months = Array.from({ length: 24 }, (_, i) => {
-    const date = new Date(initialDate);
-    // Start from 12 months ago (i - 12)
-    date.setMonth(initialDate.getMonth() + (i - 12));
-    return date;
-  });
+  };
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     setIsDrawerOpen(true);
-    form.setValue('lastPeriodDate', date.toLocaleDateString(locale));
+    const formattedDate = date.toISOString().split('T')[0];
+    form.setValue('lastPeriodDate', formattedDate);
     if (onSelect) onSelect(date);
   };
+
+  // Generate array of 24 months
+  const months = Array.from({ length: 24 }, (_, i) => {
+    const date = new Date(initialDate);
+    date.setMonth(initialDate.getMonth() + (i - 12));
+    return date;
+  });
 
   const isCurrentMonth = (date) => {
     const now = new Date();
@@ -224,33 +227,27 @@ const FullWidthMonthPicker = ({ onSelect, onCycleUpdate, initialDate = new Date(
            date.getFullYear() === now.getFullYear();
   };
 
-  const onSubmit = async (data) => {
-    setIsSubmitting(true)
-    try {
-      localStorage.setItem('cycleData', JSON.stringify(data));
-      setShowBanner(!data.lastPeriodDate);
-      
-      if (onCycleUpdate) {
-        const result = await onCycleUpdate(data);
-        if (!result.success) {
-          console.error('Failed to update cycle:', result.error);
-        }
-      }
-    } catch (error) {
-      console.error('Error during submission:', error);
-    } finally {
-      setIsSubmitting(false);
-      setIsDrawerOpen(false);
-    }
-  };
-
   return (
     <>
-      {showBanner && (
-        <div className="sticky top-0 z-50 w-full bg-primary text-primary-foreground p-4 text-center shadow-md">
-          Please select your most recent period start date
+      <div className="w-full border rounded-lg shadow-sm">
+        <div className="overflow-y-auto">
+          {months.map((date, index) => (
+            <React.Fragment key={date.toISOString()}>
+              <MonthCalendar 
+                date={date} 
+                selectedDate={selectedDate} 
+                onSelect={handleDateSelect}
+                isCurrentMonth={isCurrentMonth(date)}
+                hasInitialScrolled={hasInitialScrolled}
+                locale={locale}
+                cycleData={cycleData}  // Pass the state directly
+              />
+              {index < months.length - 1 && <div className="border-t" />}
+            </React.Fragment>
+          ))}
         </div>
-      )}
+      </div>
+
       <Drawer open={isDrawerOpen} onOpenChange={(open) => {
         if (!open) {
           setSelectedDate(null);
@@ -259,114 +256,99 @@ const FullWidthMonthPicker = ({ onSelect, onCycleUpdate, initialDate = new Date(
       }}>
         <DrawerContent>
           <div className="max-w-xl w-full p-4 mx-auto">
-              <DrawerHeader className="text-center">
-                  <DrawerTitle>Predict My Menstrual Cycle</DrawerTitle>
-              </DrawerHeader>
-              
-              <div className="p-4">
-                  <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                          <FormField
-                              control={form.control}
-                              name="lastPeriodDate"
-                              render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Most Recent Period Start Date</FormLabel>
-                                  <FormControl>
+            <DrawerHeader className="text-center">
+              <DrawerTitle>Predict My Menstrual Cycle</DrawerTitle>
+            </DrawerHeader>
+            
+            <div className="p-4">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                      control={form.control}
+                      name="lastPeriodDate"
+                      render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Most Recent Period Start Date</FormLabel>
+                          <FormControl>
+                              <Input 
+                                  {...field} 
+                                  value={field.value ? 
+                                    new Date(field.value + 'T00:00:00Z').toLocaleDateString(locale, {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                      weekday: 'long'
+                                    }) : 
+                                    ''
+                                  }
+                                  disabled 
+                              />
+                          </FormControl>
+                      </FormItem>
+                      )}
+                  />
+
+                  <FormField
+                      control={form.control}
+                      name="cycleLength"
+                      render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Average Cycle Length (Days)</FormLabel>
+                          <FormControl>
+                              <div className="flex items-center">
+                                  <Button
+                                      type="button"
+                                      variant="outline"
+                                      className="px-4"
+                                      onClick={() => field.onChange(Math.max(1, field.value - 1))}
+                                  >
+                                      <ChevronLeft className="h-4 w-4" />
+                                  </Button>
                                   <Input 
+                                      type="number" 
                                       {...field} 
-                                      value={field.value ? new Date(field.value).toLocaleDateString() : ''}
-                                      disabled 
+                                      className="text-center"
+                                      readOnly
                                   />
-                                  </FormControl>
-                              </FormItem>
-                              )}
-                          />
-
-                          <FormField
-                              control={form.control}
-                              name="cycleLength"
-                              render={({ field }) => (
-                              <FormItem>
-                                  <FormLabel>Average Cycle Length (Days)</FormLabel>
-                                  <FormControl>
-                                      <div className="flex items-center">
-                                          <Button
-                                              type="button"
-                                              variant="outline"
-                                              className="px-4"
-                                              onClick={() => field.onChange(Math.max(1, field.value - 1))}
-                                          >
-                                              <ChevronLeft className="h-4 w-4" />
-                                          </Button>
-                                          <Input 
-                                              type="number" 
-                                              {...field} 
-                                              className="text-center"
-                                              readOnly
-                                          />
-                                          <Button
-                                              type="button"
-                                              variant="outline"
-                                              className="px-4"
-                                              onClick={() => field.onChange(field.value + 1)}
-                                          >
-                                              <ChevronRight className="h-4 w-4" />
-                                          </Button>
-                                      </div>
-                                  </FormControl>
-                              </FormItem>
-                              )}
-                          />
-
-                          <DrawerFooter className="px-0">
-                              <div className="flex justify-between w-full gap-4">
-                                  <DrawerClose asChild>
-                                      <Button 
-                                          className="flex-1" 
-                                          variant="outline" 
-                                          onClick={() => {
-                                              const savedData = JSON.parse(localStorage.getItem('cycleData')) || {
-                                                  lastPeriodDate: '',
-                                                  cycleLength: 25,
-                                              };
-                                              form.reset(savedData);
-                                              setIsDrawerOpen(false);
-                                          }}
-                                          disabled={isSubmitting}
-                                      >
-                                          Cancel
-                                      </Button>
-                                  </DrawerClose>
-                                  <Button className="flex-1" type="submit" disabled={isSubmitting}>
-                                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    Update
+                                  <Button
+                                      type="button"
+                                      variant="outline"
+                                      className="px-4"
+                                      onClick={() => field.onChange(field.value + 1)}
+                                  >
+                                      <ChevronRight className="h-4 w-4" />
                                   </Button>
                               </div>
-                          </DrawerFooter>
-                      </form>
-                  </Form>
-              </div>
+                          </FormControl>
+                      </FormItem>
+                      )}
+                  />
+
+                  <DrawerFooter className="px-0">
+                      <div className="flex justify-between w-full gap-4">
+                          <DrawerClose asChild>
+                              <Button 
+                                  className="flex-1" 
+                                  variant="outline" 
+                                  onClick={() => {
+                                      form.reset(cycleData); // Reset to current cycle data
+                                  }}
+                                  disabled={isSubmitting}
+                              >
+                                  Cancel
+                              </Button>
+                          </DrawerClose>
+                          <Button className="flex-1" type="submit" disabled={isSubmitting}>
+                            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Update
+                          </Button>
+                      </div>
+                  </DrawerFooter>
+                </form>
+              </Form>
+            </div>
           </div>
         </DrawerContent>
-
-        <div className="w-full border rounded-lg shadow-sm">
-          <div className="overflow-y-auto">
-            {months.map((date, index) => (
-              <React.Fragment key={date.toISOString()}>
-                <MonthCalendar 
-                  date={date} 
-                  selectedDate={selectedDate} 
-                  onSelect={handleDateSelect}
-                  isCurrentMonth={isCurrentMonth(date)}
-                  hasInitialScrolled={hasInitialScrolled}
-                  locale={locale}
-                />
-                {index < months.length - 1 && <div className="border-t" />}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
       </Drawer>
     </>
   );
