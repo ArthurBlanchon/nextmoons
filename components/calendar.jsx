@@ -9,39 +9,42 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
 
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
-const MonthCalendar = ({ 
-  date, 
-  selectedDate, 
-  onSelect, 
-  isCurrentMonth, 
-  hasInitialScrolled, 
-  cycleData, 
-  locale = 'en-US' 
+const MonthCalendar = ({
+  date,
+  selectedDate,
+  onSelect,
+  isCurrentMonth,
+  hasInitialScrolled,
+  cycleData,
+  locale = 'en-US'
 }) => {
+  // Ref for scrolling to current month
   const monthRef = useRef(null);
   
-  useEffect(() => { 
+  // Effect to automatically scroll to current month on initial load
+  useEffect(() => {
     if (isCurrentMonth && !hasInitialScrolled.current && monthRef.current) {
-      monthRef.current.scrollIntoView({ behavior: 'instant' });
+      monthRef.current.scrollIntoView({ behavior: 'smooth' });
       hasInitialScrolled.current = true;
     }
   }, [isCurrentMonth, hasInitialScrolled]);
 
+  // Calculate calendar grid parameters
   const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
   const firstDayWeekday = firstDayOfMonth.getDay();
@@ -55,40 +58,39 @@ const MonthCalendar = ({
     const days = [];
     const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    // Parse the start date once
-    const startDate = cycleData?.lastPeriodDate ? 
-      new Date(cycleData.lastPeriodDate + 'T00:00:00.000Z') : 
+    // Parse cycle start date and length for calculations
+    const startDate = cycleData?.lastPeriodDate ?
+      new Date(cycleData.lastPeriodDate + 'T00:00:00.000Z') :
       null;
     const cycleLength = parseInt(cycleData?.cycleLength) || 28;
 
-    // Only log once per month
-    if (date.getDate() === 1) {
-      console.log(`Calendar Data for ${formatMonth(date)}:`, {
-        startDate: startDate?.toISOString(),
-        cycleLength
-      });
-    }
-
+    // Helper function to determine the status of each day
+    // (normal, period, or fertile)
     const getDayStatus = (dayDate) => {
       if (!startDate) return 'normal';
 
+      // Convert to UTC to ensure consistent calculations
       const currentDay = new Date(Date.UTC(
         dayDate.getFullYear(),
         dayDate.getMonth(),
         dayDate.getDate()
       ));
 
+      // Calculate days since cycle start
       const timeDiff = currentDay.getTime() - startDate.getTime();
       const daysSinceStart = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
       if (daysSinceStart < 0) return 'normal';
 
+      // Calculate position within the cycle
       const cyclePosition = daysSinceStart % cycleLength;
 
+      // First 4 days are period days
       if (cyclePosition >= 0 && cyclePosition <= 3) {
         return 'period';
       }
 
+      // Last 5 days before next cycle are fertile days
       if (cyclePosition >= cycleLength - 5 && cyclePosition < cycleLength) {
         return 'fertile';
       }
@@ -119,16 +121,16 @@ const MonthCalendar = ({
         date.getMonth(),
         day
       ));
-      
+
       const status = getDayStatus(currentDate);
       const isPeriod = status === 'period';
       const isFertile = status === 'fertile';
-      
-      const isSelected = selectedDate?.getDate() === day && 
+
+      const isSelected = selectedDate?.getDate() === day &&
                         selectedDate?.getMonth() === date.getMonth() &&
                         selectedDate?.getFullYear() === date.getFullYear();
-      
-      const isToday = new Date().getDate() === day && 
+
+      const isToday = new Date().getDate() === day &&
                      new Date().getMonth() === date.getMonth() &&
                      new Date().getFullYear() === date.getFullYear();
 
@@ -137,8 +139,8 @@ const MonthCalendar = ({
           key={`day-${day}`}
           onClick={() => onSelect(currentDate)}
           className={`w-full p-2 text-center rounded-lg text-sm transition-colors
-            ${isSelected ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 
-              isPeriod ? 'bg-red-500 text-white hover:bg-red-600' : 
+            ${isSelected ? 'bg-primary text-primary-foreground hover:bg-primary/90' :
+              isPeriod ? 'bg-red-500 text-white hover:bg-red-600' :
               isFertile ? 'bg-orange-500 text-white hover:bg-orange-600' : 'hover:bg-gray-100'}
             ${isToday && !isSelected ? 'bg-gray-100' : ''}
             ${!isSelected ? 'text-gray-700' : ''}`}
@@ -163,30 +165,32 @@ const MonthCalendar = ({
   );
 };
 
-const FullWidthMonthPicker = ({ 
-  onSelect, 
-  onCycleUpdate, 
-  initialData,
-  initialDate = new Date(), 
-  locale = 'en-US' 
+const FullWidthMonthPicker = ({
+  onSelect,        // Callback when date is selected
+  onCycleUpdate,   // Callback when cycle data is updated
+  initialData,     // Initial cycle data
+  initialDate = new Date(),     // Starting date for calendar
+  locale = 'en-US'           // Localization setting
 }) => {
-  console.log('Component rendering');
-  
-  // Initialize cycleData with initialData immediately
+  // Initialize cycle data state with initial values
   const [cycleData, setCycleData] = useState({
-    lastPeriodDate: initialData?.startDate,
-    cycleLength: initialData?.cycleLength
+    lastPeriodDate: initialData?.lastPeriodDate ? initialData?.lastPeriodDate : null,
+    cycleLength: initialData?.cycleLength ? initialData?.cycleLength : 28
   });
 
-  // Initialize form with the same data
+  console.log("Inital Data:", initialData);
+  console.log("Cycle Data:", cycleData);
+
+  // Initialize form with same initial values
   const form = useForm({
     defaultValues: {
-      lastPeriodDate: initialData?.startDate,
-      cycleLength: initialData?.cycleLength
+      lastPeriodDate: cycleData.lastPeriodDate,
+      cycleLength: cycleData.cycleLength
     }
   });
 
-  const [selectedDate, setSelectedDate] = useState(null); 
+  // State for UI management
+  const [selectedDate, setSelectedDate] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const hasInitialScrolled = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -223,7 +227,7 @@ const FullWidthMonthPicker = ({
 
   const isCurrentMonth = (date) => {
     const now = new Date();
-    return date.getMonth() === now.getMonth() && 
+    return date.getMonth() === now.getMonth() &&
            date.getFullYear() === now.getFullYear();
   };
 
@@ -233,9 +237,9 @@ const FullWidthMonthPicker = ({
         <div className="overflow-y-auto">
           {months.map((date, index) => (
             <React.Fragment key={date.toISOString()}>
-              <MonthCalendar 
-                date={date} 
-                selectedDate={selectedDate} 
+              <MonthCalendar
+                date={date}
+                selectedDate={selectedDate}
                 onSelect={handleDateSelect}
                 isCurrentMonth={isCurrentMonth(date)}
                 hasInitialScrolled={hasInitialScrolled}
@@ -259,7 +263,7 @@ const FullWidthMonthPicker = ({
             <DrawerHeader className="text-center">
               <DrawerTitle>Predict My Menstrual Cycle</DrawerTitle>
             </DrawerHeader>
-            
+
             <div className="p-4">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -270,18 +274,18 @@ const FullWidthMonthPicker = ({
                       <FormItem>
                           <FormLabel>Most Recent Period Start Date</FormLabel>
                           <FormControl>
-                              <Input 
-                                  {...field} 
-                                  value={field.value ? 
+                              <Input
+                                  {...field}
+                                  value={field.value ?
                                     new Date(field.value + 'T00:00:00Z').toLocaleDateString(locale, {
                                       year: 'numeric',
                                       month: 'long',
                                       day: 'numeric',
                                       weekday: 'long'
-                                    }) : 
+                                    }) :
                                     ''
                                   }
-                                  disabled 
+                                  disabled
                               />
                           </FormControl>
                       </FormItem>
@@ -304,9 +308,9 @@ const FullWidthMonthPicker = ({
                                   >
                                       <ChevronLeft className="h-4 w-4" />
                                   </Button>
-                                  <Input 
-                                      type="number" 
-                                      {...field} 
+                                  <Input
+                                      type="number"
+                                      {...field}
                                       className="text-center"
                                       readOnly
                                   />
@@ -327,9 +331,9 @@ const FullWidthMonthPicker = ({
                   <DrawerFooter className="px-0">
                       <div className="flex justify-between w-full gap-4">
                           <DrawerClose asChild>
-                              <Button 
-                                  className="flex-1" 
-                                  variant="outline" 
+                              <Button
+                                  className="flex-1"
+                                  variant="outline"
                                   onClick={() => {
                                       form.reset(cycleData); // Reset to current cycle data
                                   }}
@@ -355,3 +359,4 @@ const FullWidthMonthPicker = ({
 };
 
 export default FullWidthMonthPicker;
+
