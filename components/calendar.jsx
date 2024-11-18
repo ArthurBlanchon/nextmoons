@@ -174,12 +174,9 @@ const FullWidthMonthPicker = ({
 }) => {
   // Initialize cycle data state with initial values
   const [cycleData, setCycleData] = useState({
-    lastPeriodDate: initialData?.lastPeriodDate ? initialData?.lastPeriodDate : null,
-    cycleLength: initialData?.cycleLength ? initialData?.cycleLength : 28
+    lastPeriodDate: initialData?.lastPeriodDate || null,
+    cycleLength: initialData?.cycleLength || 28
   });
-
-  console.log("Inital Data:", initialData);
-  console.log("Cycle Data:", cycleData);
 
   // Initialize form with same initial values
   const form = useForm({
@@ -202,11 +199,11 @@ const FullWidthMonthPicker = ({
         await onCycleUpdate(data);
       }
       setCycleData(data); // Update cycle data the same way as initialization
-      setIsDrawerOpen(false);
     } catch (error) {
       console.error('Error during submission:', error);
     } finally {
       setIsSubmitting(false);
+      setIsDrawerOpen(false);
     }
   };
 
