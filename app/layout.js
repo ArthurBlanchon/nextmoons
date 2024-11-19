@@ -18,7 +18,7 @@ export const metadata = {
   description: "",
   icons: {
     apple: [
-      { url: '/reveil.webp' },
+      { url: '/moonapp_logo.png' },
     ],
   },
   appleWebApp: {
