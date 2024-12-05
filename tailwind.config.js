@@ -8,6 +8,17 @@ module.exports = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+  		},
+  		fontSize: {
+  			'display-large': ['3.5rem', { lineHeight: '1.1', fontWeight: '300' }],
+  			'display': ['2.5rem', { lineHeight: '1.2', fontWeight: '300' }],
+  			'title': ['2rem', { lineHeight: '1.25', letterSpacing: '-0.02em' }],
+  			'subtitle': ['1.25rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
+  			'body': ['1rem', { lineHeight: '1.5' }],
+  			'small': ['0.875rem', { lineHeight: '1.5' }],
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

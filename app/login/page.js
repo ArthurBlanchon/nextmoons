@@ -10,7 +10,7 @@ export default async function SignIn() {
     <div className="min-h-screen bg-[#FAF9F6] flex">
       {/* Left Section - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
-        <div className="w-full relative">
+        <div className="w-full relative pl-12">
           <Image
             src="/nextmoons-cover.png"
             alt="Moon phases illustration"
@@ -29,12 +29,21 @@ export default async function SignIn() {
         <div className="max-w-md mx-auto w-full">
           {/* Header */}
           <div className="mb-12 space-y-4">
-            <h1 className="text-4xl font-light tracking-tight text-gray-900">
-              Next Moons
-            </h1>
-            <p className="text-base text-gray-600 leading-relaxed">
-              Harmonize your professional life with your natural rhythm. 
-              A sophisticated cycle tracking experience that integrates seamlessly with your Google Calendar.
+            <div className="flex items-center gap-3 mb-2">
+              <Image
+                src="/nextmoons-logo.png"
+                alt="Nextmoons Logo"
+                width={30}
+                height={30}
+                className="w-10 h-10"
+              />
+              <h1 className="text-display font-light tracking-tight text-gray-900">
+                Nextmoons
+              </h1>
+            </div>
+            <p className="text-subtitle text-gray-600 leading-relaxed">
+              Align work with your natural rhythm.
+              Schedule around your cycles in Google Calendar.
             </p>
           </div>
 
@@ -43,38 +52,38 @@ export default async function SignIn() {
             <div className="space-y-2">
               <div className="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center">
                 <svg className="w-4 h-4 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h3 className="font-medium text-gray-900">Cycle Awareness</h3>
-              <p className="text-sm text-gray-500">Align your schedule with your natural energy phases</p>
+              <h3 className="font-medium text-body text-gray-900">Smart Scheduling</h3>
+              <p className="text-small text-gray-500">Plan meetings and tasks around your energy levels</p>
             </div>
             <div className="space-y-2">
               <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
                 <svg className="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="font-medium text-gray-900">Calendar Integration</h3>
-              <p className="text-sm text-gray-500">Seamless sync with your professional calendar</p>
+              <h3 className="font-medium text-body text-gray-900">Peak Performance</h3>
+              <p className="text-small text-gray-500">Leverage your natural productivity cycles</p>
             </div>
             <div className="space-y-2">
               <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
                 <svg className="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
               </div>
-              <h3 className="font-medium text-gray-900">Privacy First</h3>
-              <p className="text-sm text-gray-500">Your data remains private and secure</p>
+              <h3 className="font-medium text-body text-gray-900">Seamless Sync</h3>
+              <p className="text-small text-gray-500">Direct integration with Google Calendar</p>
             </div>
             <div className="space-y-2">
               <div className="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center">
                 <svg className="w-4 h-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h3 className="font-medium text-gray-900">Energy Insights</h3>
-              <p className="text-sm text-gray-500">Optimize your productivity with cycle awareness</p>
+              <h3 className="font-medium text-body text-gray-900">Private & Discreet</h3>
+              <p className="text-small text-gray-500">Professional calendar labels for workplace privacy</p>
             </div>
           </div>
 
@@ -112,7 +121,7 @@ export default async function SignIn() {
           </form>
 
           {/* Footer */}
-          <p className="mt-8 text-center text-sm text-gray-500">
+          <p className="mt-8 text-center text-small text-gray-500">
             By continuing, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>
