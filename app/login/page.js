@@ -1,41 +1,80 @@
 import { signIn, auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import Image from "next/image"
  
 export default async function SignIn() {
   const session = await auth()
   if (session) return redirect("/")
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white flex items-center justify-center">
-      <div className="max-w-md w-full mx-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-pink-100 p-8 text-center">
+    <div className="min-h-screen bg-[#FAF9F6] flex">
+      {/* Left Section - Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
+        <div className="w-full relative">
+          <Image
+            src="/nextmoons-cover.png"
+            alt="Moon phases illustration"
+            className="object-contain"
+            style={{ width: '100%', height: '100vh' }}
+            width={1000}
+            height={1000}
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent" />
+        </div>
+      </div>
+
+      {/* Right Section - Content */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 lg:px-16">
+        <div className="max-w-md mx-auto w-full">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Welcome to Period Tracker
+          <div className="mb-12 space-y-4">
+            <h1 className="text-4xl font-light tracking-tight text-gray-900">
+              Next Moons
             </h1>
-            <p className="text-gray-600">
-              Track your cycle and sync with Google Calendar
+            <p className="text-base text-gray-600 leading-relaxed">
+              Harmonize your professional life with your natural rhythm. 
+              A sophisticated cycle tracking experience that integrates seamlessly with your Google Calendar.
             </p>
           </div>
 
-          {/* Features */}
-          <div className="mb-8 grid grid-cols-2 gap-4 text-sm">
-            <div className="p-4 rounded-lg bg-pink-50">
-              <div className="text-pink-600 font-medium mb-1">Track Periods</div>
-              <div className="text-gray-600">Monitor your menstrual cycle</div>
+          {/* Features Grid */}
+          <div className="grid grid-cols-2 gap-6 mb-12">
+            <div className="space-y-2">
+              <div className="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center">
+                <svg className="w-4 h-4 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="font-medium text-gray-900">Cycle Awareness</h3>
+              <p className="text-sm text-gray-500">Align your schedule with your natural energy phases</p>
             </div>
-            <div className="p-4 rounded-lg bg-yellow-50">
-              <div className="text-yellow-600 font-medium mb-1">Fertile Windows</div>
-              <div className="text-gray-600">Know your fertile days</div>
+            <div className="space-y-2">
+              <div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center">
+                <svg className="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <h3 className="font-medium text-gray-900">Calendar Integration</h3>
+              <p className="text-sm text-gray-500">Seamless sync with your professional calendar</p>
             </div>
-            <div className="p-4 rounded-lg bg-blue-50">
-              <div className="text-blue-600 font-medium mb-1">Google Calendar</div>
-              <div className="text-gray-600">Sync with your calendar</div>
+            <div className="space-y-2">
+              <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
+                <svg className="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="font-medium text-gray-900">Privacy First</h3>
+              <p className="text-sm text-gray-500">Your data remains private and secure</p>
             </div>
-            <div className="p-4 rounded-lg bg-green-50">
-              <div className="text-green-600 font-medium mb-1">Privacy First</div>
-              <div className="text-gray-600">Your data stays private</div>
+            <div className="space-y-2">
+              <div className="w-8 h-8 rounded-full bg-teal-50 flex items-center justify-center">
+                <svg className="w-4 h-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="font-medium text-gray-900">Energy Insights</h3>
+              <p className="text-sm text-gray-500">Optimize your productivity with cycle awareness</p>
             </div>
           </div>
 
@@ -48,7 +87,7 @@ export default async function SignIn() {
           >
             <button 
               type="submit"
-              className="w-full bg-white hover:bg-gray-50 text-gray-900 font-medium py-3 px-4 rounded-lg border border-gray-300 shadow-sm transition-colors duration-200 flex items-center justify-center gap-3"
+              className="w-full bg-white hover:bg-gray-50 text-gray-900 font-medium py-4 px-6 rounded-xl border border-gray-200 shadow-sm transition-all duration-200 flex items-center justify-center gap-3 hover:shadow-md"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -68,9 +107,14 @@ export default async function SignIn() {
                   fill="#EA4335"
                 />
               </svg>
-              Signin with Google
+              Continue with Google
             </button>
           </form>
+
+          {/* Footer */}
+          <p className="mt-8 text-center text-sm text-gray-500">
+            By continuing, you agree to our Terms of Service and Privacy Policy
+          </p>
         </div>
       </div>
     </div>
