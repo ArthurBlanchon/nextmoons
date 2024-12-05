@@ -2,7 +2,7 @@
 
 # About
 
-Align work with your natural rhythm. Schedule around your cycles in Google Calendar.
+🌘📆 Align work with your natural rhythm. Schedule around your cycles in Google Calendar.
 
 # Todo
 
