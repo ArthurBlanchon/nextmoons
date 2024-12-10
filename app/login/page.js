@@ -1,6 +1,7 @@
 import { signIn, auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import Image from "next/image"
+import Link from 'next/link'
  
 export default async function SignIn() {
   const session = await auth()
@@ -122,7 +123,20 @@ export default async function SignIn() {
 
           {/* Footer */}
           <p className="mt-8 text-center text-small text-gray-500">
-            By continuing, you agree to our Terms of Service and Privacy Policy
+            By continuing, you agree to our{" "}
+            <Link 
+              href="/terms" 
+              className="font-semibold hover:underline"
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link 
+              href="/privacy" 
+              className="font-semibold hover:underline"
+            >
+              Privacy Policy
+            </Link>
           </p>
         </div>
       </div>
