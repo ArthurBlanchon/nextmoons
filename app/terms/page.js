@@ -24,46 +24,55 @@ export default function Terms() {
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">1. Acceptation des Conditions</h2>
               <p className="text-body text-gray-600">
-                En utilisant Nextmoons, vous acceptez ces conditions d&apos;utilisation dans leur intégralité. 
-                Si vous n&apos;acceptez pas ces conditions, veuillez ne pas utiliser le service.
+                En utilisant Nextmoons, vous acceptez les présentes conditions dans leur intégralité :
               </p>
+              <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
+                <li><strong>Consentement :</strong> Votre utilisation du service implique l'acceptation de ces conditions</li>
+                <li><strong>Âge Minimum :</strong> Vous confirmez avoir l'âge légal pour utiliser ce service</li>
+                <li><strong>Capacité :</strong> Vous êtes légalement capable de former un contrat contraignant</li>
+                <li><strong>Refus :</strong> En cas de non-acceptation, veuillez ne pas utiliser le service</li>
+              </ul>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">2. Description du Service</h2>
               <p className="text-body text-gray-600">
-                Nextmoons est un service qui permet de :
+                Nextmoons est un service spécialisé qui vous permet de :
               </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Suivre vos cycles menstruels</li>
-                <li>Synchroniser ces informations avec Google Calendar</li>
-                <li>Recevoir des prédictions sur vos prochains cycles</li>
-                <li>Gérer vos données de cycle de manière privée et professionnelle</li>
+                <li><strong>Suivi Personnel :</strong> Gérer et suivre vos cycles menstruels de manière professionnelle</li>
+                <li><strong>Intégration Google :</strong> Synchroniser vos données avec Google Calendar de manière sécurisée</li>
+                <li><strong>Prédictions :</strong> Recevoir des estimations pour vos prochains cycles</li>
+                <li><strong>Confidentialité :</strong> Gérer vos données de manière privée et discrète</li>
+                <li><strong>Accessibilité :</strong> Accéder à vos informations depuis n'importe quel appareil connecté</li>
               </ul>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">3. Compte Google</h2>
               <p className="text-body text-gray-600">
-                Pour utiliser Nextmoons, vous devez :
+                Pour utiliser Nextmoons, les conditions suivantes s'appliquent :
               </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Avoir un compte Google actif</li>
-                <li>Autoriser Nextmoons à accéder à votre Google Calendar</li>
-                <li>Maintenir la sécurité de vos identifiants de connexion</li>
+                <li><strong>Compte Requis :</strong> Disposer d'un compte Google actif et en règle</li>
+                <li><strong>Autorisation :</strong> Accepter de donner à Nextmoons un accès limité à votre Google Calendar</li>
+                <li><strong>Sécurité :</strong> Maintenir la confidentialité de vos identifiants Google</li>
+                <li><strong>Responsabilité :</strong> Être responsable de toute activité sur votre compte</li>
+                <li><strong>Révocation :</strong> Pouvoir révoquer l'accès à tout moment via votre compte Google</li>
               </ul>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">4. Utilisation du Service</h2>
               <p className="text-body text-gray-600">
-                Vous vous engagez à :
+                En tant qu'utilisatrice de Nextmoons, vous vous engagez à :
               </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Fournir des informations exactes pour le suivi de vos cycles</li>
-                <li>Ne pas utiliser le service à des fins illégales</li>
-                <li>Ne pas tenter de perturber ou d'endommager le service</li>
-                <li>Ne pas accéder aux données d'autres utilisateurs</li>
+                <li><strong>Exactitude :</strong> Fournir des informations exactes pour le suivi de vos cycles</li>
+                <li><strong>Usage Approprié :</strong> Ne pas utiliser le service à des fins illégales ou non autorisées</li>
+                <li><strong>Respect :</strong> Ne pas tenter de perturber ou d'endommager le service</li>
+                <li><strong>Confidentialité :</strong> Ne pas tenter d'accéder aux données d'autres utilisatrices</li>
+                <li><strong>Sécurité :</strong> Signaler toute faille de sécurité détectée</li>
               </ul>
             </div>
 
@@ -121,25 +130,27 @@ export default function Terms() {
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">8. Limitation de Responsabilité</h2>
               <p className="text-body text-gray-600">
-                Nextmoons ne peut être tenu responsable :
+                Nextmoons décline toute responsabilité concernant :
               </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Des inexactitudes dans les prédictions de cycles</li>
-                <li>Des décisions prises sur la base de ces prédictions</li>
-                <li>Des problèmes techniques liés à Google Calendar</li>
-                <li>De l'utilisation inappropriée du service</li>
+                <li><strong>Prédictions :</strong> L'exactitude des prédictions de cycles, qui sont des estimations</li>
+                <li><strong>Décisions :</strong> Les décisions prises sur la base de ces prédictions</li>
+                <li><strong>Disponibilité :</strong> Les interruptions temporaires du service liées à Google Calendar</li>
+                <li><strong>Données :</strong> La perte de données due à des actions de l'utilisatrice</li>
+                <li><strong>Usage :</strong> Toute utilisation inappropriée du service</li>
               </ul>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">9. Modifications du Service</h2>
               <p className="text-body text-gray-600">
-                Nextmoons se réserve le droit de :
+                Nextmoons se réserve les droits suivants :
               </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Modifier ou interrompre le service à tout moment</li>
-                <li>Mettre à jour ces conditions d'utilisation</li>
-                <li>Changer les fonctionnalités proposées</li>
+                <li><strong>Évolution :</strong> Modifier ou améliorer le service à tout moment</li>
+                <li><strong>Maintenance :</strong> Interrompre temporairement le service pour maintenance</li>
+                <li><strong>Notification :</strong> Informer les utilisatrices des changements majeurs</li>
+                <li><strong>Fonctionnalités :</strong> Ajouter ou retirer des fonctionnalités</li>
               </ul>
             </div>
 
@@ -149,28 +160,34 @@ export default function Terms() {
                 Vous pouvez arrêter d'utiliser Nextmoons à tout moment en :
               </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Révoquant l'accès à votre compte Google</li>
-                <li>Supprimant le calendrier créé par l'application</li>
-                <li>Cessant d'utiliser le service</li>
+                <li><strong>Révocation :</strong> Révoquant l'accès via votre compte Google</li>
+                <li><strong>Suppression :</strong> Supprimant le calendrier "Periods of"</li>
+                <li><strong>Données :</strong> Effaçant les données de votre navigateur</li>
+                <li><strong>Compte :</strong> Cessant simplement d'utiliser le service</li>
               </ul>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">11. Contact</h2>
               <p className="text-body text-gray-600">
-                Pour toute question concernant ces conditions d&apos;utilisation, contactez-nous à :
-                <a href="mailto:seer@nextmoons.com" className="font-semibold hover:underline ml-1">
-                  seer@nextmoons.com
-                </a>
+                Pour toute question concernant ces conditions d'utilisation :
               </p>
+              <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
+                <li><strong>Email :</strong> Contactez-nous à <a href="mailto:seer@nextmoons.com" className="font-semibold hover:underline">seer@nextmoons.com</a></li>
+              </ul>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">12. Droit Applicable</h2>
               <p className="text-body text-gray-600">
-                Ces conditions sont régies par le droit français. Tout litige relatif à leur interprétation 
-                ou leur exécution relève des tribunaux français compétents.
+                Cadre juridique de ces conditions :
               </p>
+              <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
+                <li><strong>Juridiction :</strong> Ces conditions sont régies par le droit français</li>
+                <li><strong>Litiges :</strong> Tout litige relève des tribunaux français compétents</li>
+                <li><strong>Invalidité :</strong> Si une clause est invalide, les autres restent en vigueur</li>
+                <li><strong>Intégralité :</strong> Ces conditions constituent l'accord complet entre vous et Nextmoons</li>
+              </ul>
             </div>
           </section>
         </div>

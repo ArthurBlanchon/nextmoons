@@ -24,19 +24,20 @@ export default function Privacy() {
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">Introduction</h2>
               <p className="text-body text-gray-600">
-                Nextmoons s'engage à protéger votre vie privée. Cette politique de confidentialité explique comment nous utilisons les services Google pour gérer vos calendriers de cycles menstruels.
+                Nextmoons s'engage à protéger votre vie privée avec les plus hauts standards de sécurité et de transparence. Cette politique de confidentialité détaille précisément comment nous utilisons les services Google pour gérer vos calendriers de cycles menstruels, tout en garantissant la protection absolue de vos données personnelles.
               </p>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">Stockage des Données</h2>
               <p className="text-body text-gray-600">
-                Nextmoons ne stocke aucune donnée personnelle sur ses serveurs. Toutes les informations sont :
+                Par conception, Nextmoons adopte une approche minimaliste du stockage des données :
               </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Stockées directement dans votre Google Calendar personnel</li>
-                <li>Les informations d'authentification sont uniquement conservées dans votre navigateur de manière chiffrée</li>
-                <li>Aucune base de données externe n'est utilisée</li>
+                <li><strong>Données de Calendrier :</strong> Stockées exclusivement dans votre Google Calendar personnel, dans un calendrier secondaire dédié "Periods of"</li>
+                <li><strong>Données d'Authentification :</strong> Conservées uniquement dans votre navigateur sous forme chiffrée, comprenant uniquement les jetons d'accès Google</li>
+                <li><strong>Absence de Base de Données :</strong> Aucune base de données externe n'est utilisée, garantissant que vos données restent sous votre contrôle</li>
+                <li><strong>Données Temporaires :</strong> Les données en mémoire sont effacées dès que vous quittez l'application</li>
               </ul>
             </div>
 
@@ -73,52 +74,77 @@ export default function Privacy() {
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">Autorisations Google</h2>
-              <p className="text-body text-gray-600">Nous demandons les autorisations suivantes :</p>
+              <p className="text-body text-gray-600">
+                Pour fournir notre service, nous demandons les autorisations Google suivantes. Chaque autorisation a un but spécifique et limité :
+              </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Accès au profil et email Google : pour une expérience utilisateur simplifiée</li>
-                <li>Autorisation de créer et gérer un calendrier secondaire : pour y stocker vos données de cycles</li>
-                <li>Gestion des événements du calendrier secondaire : pour mettre à jour vos cycles</li>
+                <li><strong>OpenID :</strong> Requis pour le fonctionnement sécurisé des autres autorisations et l'authentification de base</li>
+                <li><strong>Email :</strong> Utilisé uniquement pour l'identification de votre compte, nous ne stockons pas cette information</li>
+                <li><strong>Profil :</strong> Utilisé uniquement pour améliorer votre expérience utilisateur et personnaliser l'interface</li>
+                <li><strong>Calendrier :</strong> Utilisé exclusivement pour :
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>Créer et gérer le calendrier "Periods of"</li>
+                    <li>Créer et mettre à jour les événements dans ce calendrier</li>
+                    <li>Rechercher le calendrier "Periods of" parmi vos calendriers</li>
+                    <li>Nous n'accédons pas au contenu de vos autres calendriers</li>
+                  </ul>
+                </li>
               </ul>
+              <p className="text-body text-gray-600 mt-4">
+                <strong>Note importante :</strong> L'accès complet au calendrier est techniquement requis pour pouvoir localiser et gérer le calendrier "Periods of". Cependant, par design et par engagement, nous limitons strictement notre utilisation au seul calendrier "Periods of".
+              </p>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">Google Calendar</h2>
               <p className="text-body text-gray-600">
-                Notre service fonctionne exclusivement via Google Calendar. Nous :
+                Notre service fonctionne exclusivement via Google Calendar, avec des restrictions strictes :
               </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Créons un calendrier secondaire dédié à vos cycles</li>
-                <li>N'accédons pas à vos autres calendriers</li>
-                <li>Ne stockons aucune donnée en dehors de Google Calendar</li>
-                <li>Utilisons des libellés discrets pour les événements</li>
+                <li><strong>Calendrier Dédié :</strong> Création d'un calendrier secondaire "Periods of" spécifique à vos cycles</li>
+                <li><strong>Accès Limité :</strong> Aucun accès technique ou pratique à vos autres calendriers</li>
+                <li><strong>Données Minimales :</strong> Stockage uniquement des dates de cycles dans Google Calendar</li>
+                <li><strong>Libellés Discrets :</strong> Utilisation de descriptions neutres pour tous les événements</li>
+                <li><strong>Contrôle Total :</strong> Possibilité de supprimer ou modifier le calendrier à tout moment</li>
               </ul>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">Vos Droits</h2>
-              <p className="text-body text-gray-600">Vous pouvez à tout moment :</p>
+              <p className="text-body text-gray-600">
+                Vous disposez d'un contrôle total sur vos données et votre utilisation de Nextmoons :
+              </p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
-                <li>Révoquer l'accès à votre compte Google</li>
-                <li>Supprimer le calendrier secondaire créé</li>
-                <li>Effacer les données de votre navigateur</li>
+                <li><strong>Révocation d'Accès :</strong> Révoquez l'accès à votre compte Google instantanément via votre compte Google</li>
+                <li><strong>Suppression du Calendrier :</strong> Supprimez le calendrier "Periods of" directement depuis Google Calendar</li>
+                <li><strong>Effacement des Données :</strong> Effacez les données de votre navigateur en vous déconnectant ou en supprimant les cookies</li>
+                <li><strong>Portabilité :</strong> Exportez vos données de cycle depuis Google Calendar à tout moment</li>
+                <li><strong>Modification :</strong> Modifiez ou supprimez n'importe quelle donnée de cycle quand vous le souhaitez</li>
               </ul>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">Contact</h2>
               <p className="text-body text-gray-600">
-                Pour toute question concernant cette politique de confidentialité, contactez-nous à :
-                <a href="mailto:seer@nextmoons.com" className="font-semibold hover:underline ml-1">
-                  seer@nextmoons.com
-                </a>
+                Pour toute question concernant cette politique de confidentialité ou vos données personnelles :
               </p>
+              <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
+                <li><strong>Email :</strong> Contactez-nous à <a href="mailto:seer@nextmoons.com" className="font-semibold hover:underline">seer@nextmoons.com</a></li>
+                <li><strong>Demandes de Données :</strong> Pour toute demande concernant vos données, nous vous répondrons dans un délai maximum de 30 jours</li>
+              </ul>
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-title font-medium text-gray-900">Modifications</h2>
+              <h2 className="text-title font-medium text-gray-900">Modifications de la Politique</h2>
               <p className="text-body text-gray-600">
-                Nous nous réservons le droit de modifier cette politique de confidentialité à tout moment. Les modifications entrent en vigueur dès leur publication sur cette page.
+                Concernant les modifications de cette politique de confidentialité :
               </p>
+              <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
+                <li><strong>Mises à Jour :</strong> Nous nous réservons le droit de modifier cette politique à tout moment</li>
+                <li><strong>Notification :</strong> Les modifications importantes feront l'objet d'une notification dans l'application</li>
+                <li><strong>Date d'Effet :</strong> Les modifications entrent en vigueur dès leur publication sur cette page</li>
+                <li><strong>Historique :</strong> L'historique des modifications est disponible sur demande</li>
+              </ul>
             </div>
           </section>
         </div>
