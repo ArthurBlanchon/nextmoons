@@ -41,6 +41,37 @@ export default function Privacy() {
             </div>
 
             <div className="space-y-4">
+              <h2 className="text-title font-medium text-gray-900">Partage et Protection des Données</h2>
+              <p className="text-body text-gray-600">
+                Chez Nextmoons, nous prenons la protection de vos données très au sérieux. Voici notre politique stricte concernant le partage des données :
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
+                <li><strong>Aucun Partage de Données :</strong> Nous ne partageons, ne transférons, ni ne divulguons vos données Google à aucun tiers, y compris mais sans s'y limiter : partenaires commerciaux, annonceurs, ou autres services tiers</li>
+                <li><strong>Usage Exclusif :</strong> Nous n'utilisons vos données que pour fournir le service Nextmoons via l'API Google Calendar</li>
+                <li><strong>Aucun Stockage Externe :</strong> Nous ne stockons aucune donnée sur nos serveurs ou des serveurs tiers</li>
+                <li><strong>Stockage Local Uniquement :</strong> Les seules données stockées le sont sur votre appareil dans un cookie chiffré</li>
+                <li><strong>Données Minimales :</strong> Le cookie chiffré ne contient que les jetons d'accès et de rafraîchissement de l'API Google Calendar</li>
+                <li><strong>Accès Temporaire :</strong> Nous n'accédons à vos données que lorsque vous utilisez activement l'application</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-title font-medium text-gray-900">Mécanismes de Protection des Données Sensibles</h2>
+              <p className="text-body text-gray-600">
+                Pour assurer la sécurité de vos données sensibles, nous avons implémenté les mécanismes de protection suivants :
+              </p>
+              <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
+                <li><strong>Chiffrement Local :</strong> Chiffrement de bout en bout des données stockées localement sur votre appareil</li>
+                <li><strong>Protocoles Sécurisés :</strong> Utilisation exclusive des protocoles sécurisés HTTPS et OAuth 2.0 pour toutes les communications</li>
+                <li><strong>Accès Restreint :</strong> Accès limité au seul calendrier "Periods of" que nous créons, sans accès à vos autres calendriers</li>
+                <li><strong>Zéro Persistance :</strong> Aucune persistance des données sur nos serveurs ou infrastructure cloud</li>
+                <li><strong>Nettoyage Automatique :</strong> Suppression automatique des données lors de la déconnexion</li>
+                <li><strong>Contrôle Utilisateur :</strong> Possibilité de révoquer l'accès à tout moment via votre compte Google</li>
+                <li><strong>Surveillance Continue :</strong> Monitoring régulier de nos systèmes de sécurité</li>
+              </ul>
+            </div>
+
+            <div className="space-y-4">
               <h2 className="text-title font-medium text-gray-900">Autorisations Google</h2>
               <p className="text-body text-gray-600">Nous demandons les autorisations suivantes :</p>
               <ul className="list-disc pl-6 space-y-2 text-body text-gray-600">
